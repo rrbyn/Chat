@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/js/style.css">
 </head>
 
 <body>
@@ -17,58 +18,13 @@
     </div>
 
     <h1>Chat</h1>
-    <ul id="message-container"></ul>
-    <input id="message-box" type="text">
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/chat.js"></script>
-    <script src="/js/ship.js"></script>
-    <style>
-.body {
+    <div class="containercontainer">
+        <ul id="message-container"></ul>
+        <input id="message-box" type="text">
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/chat.js"></script>
 
-}
-
-#container   {
-    display: flex;
-}
-
-.board {
-    margin: auto;
-    margin-top: 1em;
-    width: 30em;
-    height: 30em;
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 1fr);
-
-}
-.cell {
-    width: 3em;
-    height: 3em;
-    border: 1px solid black;
-    text-align: center;
-    font-size: 1em;
-}
-
-.ship {
-    background-color: red;
-}
-
-li {
-    background-color: cornflowerblue;
-    color: white;
-    border-radius: 0.75rem;
-    margin: 10px 0px;
-    padding: 5px 10px;
-    list-style-type: none;
-    width: fit-content;
-    margin-right: 10px;
-}
-
-ul {
-    display: flex;
-    flex-direction: column;
-}
-</style>
+    </div>
 </body>
 
 </html>

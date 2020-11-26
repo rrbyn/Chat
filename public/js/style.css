@@ -1,0 +1,49 @@
+#container {
+    display: flex;
+}
+.board {
+    margin: auto;
+    margin-top: 1em;
+    width: 30em;
+    height: 30em;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+.cell {
+    width: 3em;
+    height: 3em;
+    border: 1px solid black;
+    text-align: center;
+    font-size: 1em;
+}
+.ship {
+    background-color: red;
+}
+
+.hit {
+    background-color: red;
+}
+.close{
+    background-color: lightcoral;
+}
+.miss{
+    background-color: grey;
+}
+body{
+
+}
+#message-container{
+
+    height: 240px;
+    overflow-y: auto;
+    background-image: url('tenor.gif');
+    width: 480px;
+    border: solid;
+}
+.containercontainer{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+}
