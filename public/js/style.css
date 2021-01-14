@@ -1,6 +1,14 @@
 #container {
     display: flex;
 }
+#boardsContainer{
+    display: flex;
+    flex-wrap: wrap;
+}
+#oneBoard{
+    display: flex;
+
+}
 .board {
     margin: auto;
     margin-top: 1em;
@@ -37,7 +45,7 @@ body{
 
     height: 240px;
     overflow-y: auto;
-    background-image: url('tenor.gif');
+    background-image: url('af0.gif');
     width: 480px;
     border: solid;
 }

@@ -17,16 +17,17 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
 
     socket.on('chatMessage', msg => {
-        console.log(socket.id + ': ' + msg)
+        // console.log(socket.id + ': ' + msg)
         io.emit('chatMessage', { 'userid': socket.id, 'message': msg })
     })
 
-    io.emit('initGameBoard', { 'humanGameBoard': seaBattle.gameBoard.human })
+    io.emit('initGameBoard', { 'humanGameBoard': seaBattle.gameBoard.human, 'userid': socket.id })
 
     //console.log('user connected ' + socket.id)
-    //socket.on('disconnect', () => {
-    //    console.log('user ' + socket.id + ' disconnected');
-    //});
+    socket.on('disconnect', () => {
+        console.log('user ' + socket.id + ' disconnected');
+        io.emit('removeBoard', { 'userid': socket.id })
+    });
 })
 
 server.listen(port, () => {
