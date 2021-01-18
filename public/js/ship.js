@@ -1,24 +1,4 @@
-cellDivs.forEach(el => {
-    el.addEventListener('click', event => {
-        const selectedCell = event.currentTarget
-        const selectedRow = selectedCell.dataset.row
-        const selectedCol = selectedCell.dataset.col
 
-        socket.emit('shootMessage', selectedCell)
-
-        if (gameBoard['machine'][selectedRow][selectedCol].charAt(0) == 's') {
-            selectedCell.classList += ' hit'
-            // cellDiv.innerHTML = gameBoard[boardName][i][j]
-        } else if (gameBoard['machine'][selectedRow][selectedCol] == '**') {
-            selectedCell.classList += ' close'
-        } else if (gameBoard['machine'][selectedRow][selectedCol] == '--') {
-            selectedCell.classList += ' miss'
-        }
-
-
-
-    })
-})
 
 function initGrid(b) {
     const boardName = b.dataset.boardName

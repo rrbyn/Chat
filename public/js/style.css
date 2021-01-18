@@ -4,6 +4,8 @@
 #boardsContainer{
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
 }
 #oneBoard{
     display: flex;
@@ -17,6 +19,7 @@
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
+
 }
 .cell {
     width: 3em;

@@ -7,6 +7,7 @@ const socketio = require('socket.io')
 const io = socketio(server)
 const port = 8000
 
+
 const seaBattle = require('./sea-battle')
 console.log(seaBattle.gameBoard)
 
@@ -15,23 +16,32 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+    io.emit('userList', { 'userid': socket.id })
+
+    socket.on('joinRequest', res => {
+        console.log(res)
+    })
 
     socket.on('chatMessage', msg => {
         // console.log(socket.id + ': ' + msg)
         io.emit('chatMessage', { 'userid': socket.id, 'message': msg })
     })
 
+
     io.emit('initGameBoard', { 'humanGameBoard': seaBattle.gameBoard.human, 'userid': socket.id })
 
     //console.log('user connected ' + socket.id)
     socket.on('disconnect', () => {
         console.log('user ' + socket.id + ' disconnected');
-        io.emit('removeBoard', { 'userid': socket.id })
+        io.emit('removeData', { 'userid': socket.id })
     });
 })
 
+
+
 server.listen(port, () => {
     console.log(`Example app listening on port ${port}!`)
+
 });
 
 app.use('/js', express.static('./public/js/'))

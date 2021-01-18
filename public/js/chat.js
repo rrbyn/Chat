@@ -3,6 +3,8 @@ const socket = io()
 const messageContainer = document.querySelector('#message-container')
 const messageInput = document.querySelector('#message-box')
 const boardsContainer = document.getElementById('boardsContainer')
+const userListContainer = document.getElementById('userListContainer')
+
 
 
 messageInput.addEventListener('keyup', e => {
@@ -17,9 +19,9 @@ socket.on('chatMessage', res => {
     messageLi.innerText = res.userid + ': ' + res.message
     messageContainer.append(messageLi)
 })
-socket.on('initGameBoard', res => {
-    console.log(res)
 
+socket.on('initGameBoard', res => {
+    console.log(res.humanGameBoard)
     let humanBoardDiv = document.createElement('div')
     humanBoardDiv.classList.add('board')
     humanBoardDiv.setAttribute('data-board-name', 'human');
@@ -43,22 +45,38 @@ socket.on('initGameBoard', res => {
 
             if (res.humanGameBoard[i][j].charAt(0) == 's') {
                 cellDiv.classList += ' ship'
-                // cellDiv.innerHTML = gameBoard[boardName][i][j]
+                //cellDiv.innerHTML = gameBoard[boardName][i][j]
             }
 
             humanBoardDiv.append(cellDiv)
-            oneBoard.append(humanBoardDiv)
-            oneBoard.append(nameDiv)
-            boardsContainer.append(oneBoard)
 
         }
     }
+    oneBoard.append(humanBoardDiv)
+    oneBoard.append(nameDiv)
+    boardsContainer.append(oneBoard)
+
 })
 
-socket.on('removeBoard', res => {
+socket.on('removeData', res => {
     console.log(res.userid)
+
     userBoard = document.querySelector("[userid=" + CSS.escape(res.userid) + "]");
     userBoard.remove()
+
+})
+
+socket.on('userList', res => {
+    const userLi = document.createElement('li')
+    userLi.innerText = res.userid
+    userLi.setAttribute("userId", res.userid)
+    userListContainer.append(userLi)
+    userLi.addEventListener("click", event => {
+        var target = event.target
+        console.log("click")
+        socket.emit("joinRequest", { "from": res.userid, "to": target.innerText })
+    })
+
 })
 
 

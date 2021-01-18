@@ -1,5 +1,4 @@
 
-
 let gameBoard = {
     'human': [
         ['--', '--', '--', '--', '--', '--', '--', '--', '--', '--'],
@@ -112,5 +111,6 @@ for (let len = 4; len > 0; len--) {
         initShip(len, 'machine')
     }
 }
+
 
 module.exports = { gameBoard }
