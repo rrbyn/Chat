@@ -1,4 +1,8 @@
 const express = require('express')
+const session = require('express-session');
+const redis = require('redis');
+const connectRedis = require('connect-redis');
+var bodyParser = require('body-parser');
 const app = express()
 const http = require('http')
 const { connect } = require('http2')
@@ -6,17 +10,94 @@ const server = http.createServer(app)
 const socketio = require('socket.io')
 const io = socketio(server)
 const port = 8000
+const userList = {}
 
 
 const seaBattle = require('./sea-battle')
 console.log(seaBattle.gameBoard)
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html')
+app.use('/js', express.static('./public/js/'))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const RedisStore = connectRedis(session)
+//Configure redis client
+const redisClient = redis.createClient({
+    host: 'localhost',
+    port: 6379
+})
+redisClient.on('error', function (err) {
+    console.log('Could not establish a connection with redis. ' + err);
+});
+redisClient.on('connect', function (err) {
+    console.log('Connected to redis successfully');
 });
 
+//Configure session middleware
+ const sessionMiddleware = session({
+    store: new RedisStore({ client: redisClient }),
+    secret: 'secret$%^134',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // if true only transmit cookie over https
+        httpOnly: false, // if true prevent client side JS from reading the cookie 
+        maxAge: 1000 * 60 * 10 // session max age in miliseconds
+    }
+})
+
+app.use(sessionMiddleware)
+
+io.use((socket, next) => {
+    sessionMiddleware(socket.request, {}, next )
+})
+
+app.get("/", (req, res) => {
+    sess = req.session;
+    if (sess.username && sess.password) {
+        sess = req.session;
+        if (sess.username) {
+            res.sendFile(__dirname + '/public/index.html')
+            //res.write(`<h1>Welcome ${sess.username} </h1><br>`)
+
+            //res.write(
+             //   `<h3>This is the Home page</h3>`
+            //);
+            //res.end('<a href=' + '/logout' + '>Click here to log out</a >')
+        }
+    } else {
+        res.sendFile(__dirname + "/public/js/login.html")
+    }
+});
+
+app.post("/login", (req, res) => {
+    sess = req.session;
+    sess.username = req.body.username
+    sess.password = req.body.password
+    // add username and password validation logic here if you want. If user is authenticated send the response as success
+    res.end("success")
+});
+
+app.get("/logout", (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return console.log(err);
+        }
+        res.redirect("/")
+    });
+});
+
+
+
+
 io.on('connection', (socket) => {
-    io.emit('userList', { 'userid': socket.id })
+
+    const sess = socket.request.session
+    userList[socket.id] = sess.username
+    socket.on('userList', res => {
+        io.emit('userList', { 'userid': socket.id })
+    })
+    
 
     socket.on('joinRequest', res => {
         console.log(res)
@@ -27,16 +108,18 @@ io.on('connection', (socket) => {
         io.emit('chatMessage', { 'userid': socket.id, 'message': msg })
     })
 
+    io.emit('newUserConnected', { userList })
+    //io.emit('initGameBoard', { 'humanGameBoard': seaBattle.gameBoard.human, 'userid': socket.id })
 
-    io.emit('initGameBoard', { 'humanGameBoard': seaBattle.gameBoard.human, 'userid': socket.id })
-
-    //console.log('user connected ' + socket.id)
+    console.log('user connected ' + socket.id)
     socket.on('disconnect', () => {
         console.log('user ' + socket.id + ' disconnected');
-        io.emit('removeData', { 'userid': socket.id })
+        //io.emit('removeData', { 'userid': socket.id })
+        delete userList[socket.id]
     });
-})
 
+    console.log(userList)
+})
 
 
 server.listen(port, () => {

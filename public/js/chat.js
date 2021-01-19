@@ -4,6 +4,9 @@ const messageContainer = document.querySelector('#message-container')
 const messageInput = document.querySelector('#message-box')
 const boardsContainer = document.getElementById('boardsContainer')
 const userListContainer = document.getElementById('userListContainer')
+const userList = document.querySelector('#userList')
+
+
 
 
 
@@ -18,6 +21,16 @@ socket.on('chatMessage', res => {
     const messageLi = document.createElement('li')
     messageLi.innerText = res.userid + ': ' + res.message
     messageContainer.append(messageLi)
+})
+
+socket.on('newUserConnected', userListObj => {
+    for (const user in userListObj) {
+        const userLi = document.createElement('li')
+        userLi.innerText = userListObj[socket.id]
+        messageContainer.append(messageLi)
+        console.log(res)
+        
+    }
 })
 
 socket.on('initGameBoard', res => {
@@ -67,18 +80,14 @@ socket.on('removeData', res => {
 })
 
 socket.on('userList', res => {
-    const userLi = document.createElement('li')
-    userLi.innerText = res.userid
-    userLi.setAttribute("userId", res.userid)
-    userListContainer.append(userLi)
-    userLi.addEventListener("click", event => {
-        var target = event.target
-        console.log("click")
-        socket.emit("joinRequest", { "from": res.userid, "to": target.innerText })
-    })
+    console.log(res.userid)    
+    
 
 })
 
+//userList.forEach(user => {
+ //   console.log(user)
+//})
 
 
 
