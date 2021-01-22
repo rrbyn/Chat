@@ -59,6 +59,6 @@ body{
 
 }
 
-.userList {
-    
+#userList {
+    display: flex;
 }

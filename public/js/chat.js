@@ -23,13 +23,13 @@ socket.on('chatMessage', res => {
     messageContainer.append(messageLi)
 })
 
-socket.on('newUserConnected', userListObj => {
-    for (const user in userListObj) {
+socket.on('updateUserList', userListObj => {
+    for (const userName in userListObj) {
         const userLi = document.createElement('li')
-        userLi.innerText = userListObj[socket.id]
-        messageContainer.append(messageLi)
-        console.log(res)
-        
+        userLi.innerText = userListObj[userName]
+        userList.append(userLi)
+        console.log(userListObj[socket.id])
+
     }
 })
 
@@ -80,13 +80,13 @@ socket.on('removeData', res => {
 })
 
 socket.on('userList', res => {
-    console.log(res.userid)    
-    
+    console.log(res.userid)
+
 
 })
 
 //userList.forEach(user => {
- //   console.log(user)
+//   console.log(user)
 //})
 
 

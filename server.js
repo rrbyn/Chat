@@ -10,6 +10,7 @@ const server = http.createServer(app)
 const socketio = require('socket.io')
 const io = socketio(server)
 const port = 8000
+const path = require('path');
 const userList = {}
 
 
@@ -20,7 +21,11 @@ app.use('/js', express.static('./public/js/'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use('/public', express.static(path.join(__dirname, '/public')));
+
 const RedisStore = connectRedis(session)
+
+
 //Configure redis client
 const redisClient = redis.createClient({
     host: 'localhost',
@@ -34,14 +39,14 @@ redisClient.on('connect', function (err) {
 });
 
 //Configure session middleware
- const sessionMiddleware = session({
+const sessionMiddleware = session({
     store: new RedisStore({ client: redisClient }),
     secret: 'secret$%^134',
     resave: false,
     saveUninitialized: false,
     cookie: {
         secure: false, // if true only transmit cookie over https
-        httpOnly: false, // if true prevent client side JS from reading the cookie 
+        httpOnly: false, // if true prevent client side JS from reading the cookie
         maxAge: 1000 * 60 * 10 // session max age in miliseconds
     }
 })
@@ -49,7 +54,7 @@ redisClient.on('connect', function (err) {
 app.use(sessionMiddleware)
 
 io.use((socket, next) => {
-    sessionMiddleware(socket.request, {}, next )
+    sessionMiddleware(socket.request, {}, next)
 })
 
 app.get("/", (req, res) => {
@@ -61,7 +66,7 @@ app.get("/", (req, res) => {
             //res.write(`<h1>Welcome ${sess.username} </h1><br>`)
 
             //res.write(
-             //   `<h3>This is the Home page</h3>`
+            //   `<h3>This is the Home page</h3>`
             //);
             //res.end('<a href=' + '/logout' + '>Click here to log out</a >')
         }
@@ -94,10 +99,9 @@ io.on('connection', (socket) => {
 
     const sess = socket.request.session
     userList[socket.id] = sess.username
-    socket.on('userList', res => {
-        io.emit('userList', { 'userid': socket.id })
-    })
-    
+    userList[sess.username] = socket.id;
+    io.emit('updateUserList', userList);
+
 
     socket.on('joinRequest', res => {
         console.log(res)
@@ -123,7 +127,7 @@ io.on('connection', (socket) => {
 
 
 server.listen(port, () => {
-    console.log(`Example app listening on port ${port}!`)
+    console.log(`listening on port ${port}!`)
 
 });
 
