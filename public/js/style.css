@@ -60,5 +60,5 @@ body{
 }
 
 #userList {
-    display: flex;
+    display: inline;
 }

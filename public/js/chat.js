@@ -28,7 +28,7 @@ socket.on('updateUserList', userListObj => {
         const userLi = document.createElement('li')
         userLi.innerText = userListObj[userName]
         userList.append(userLi)
-        console.log(userListObj[socket.id])
+        console.log(userListObj[userName])
 
     }
 })

@@ -109,11 +109,11 @@ io.on('connection', (socket) => {
 
     socket.on('chatMessage', msg => {
         // console.log(socket.id + ': ' + msg)
-        io.emit('chatMessage', { 'userid': socket.id, 'message': msg })
+        io.emit('chatMessage', { 'userid': userList[socket.id], 'message': msg })
     })
 
     io.emit('newUserConnected', { userList })
-    //io.emit('initGameBoard', { 'humanGameBoard': seaBattle.gameBoard.human, 'userid': socket.id })
+    //io.emit('initGameBoard', { 'humanGameBoard': seaBattle.gameBoard.human, 'userid': userList[socket.id] })
 
     console.log('user connected ' + socket.id)
     socket.on('disconnect', () => {
